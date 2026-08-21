@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Start State — Form{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Submit once</p>
+  <h1>Start State</h1>
+  <p class="lede">Enter unit, subunits, group list, and place. Admin can review submissions later.</p>
+</section>
+
+<form method="post" class="form-shell" id="start-form">
+  <label class="field">
+    <span>Unit name</span>
+    <input
+      name="unit_name"
+      required
+      value="{{ unit_name }}"
+      placeholder="e.g. Company / Battalion"
+      autocomplete="organization"
+    />
+  </label>
+
+  <div class="subunit-stack">
+    <div class="subunit-head">
+      <h2>Subunits</h2>
+      <button type="button" class="btn ghost" id="add-subunit">+ Add subunit</button>
+    </div>
+
+    <div id="subunit-list">
+      {% for row in subunits %}
+      <section class="subunit-card" data-subunit>
+        <div class="subunit-card-top">
+          <label class="field grow">
+            <span>Subunit name</span>
+            <input name="subunit_name" required value="{{ row.subunit_name }}" placeholder="Subunit name" />
+          </label>
+          <button type="button" class="btn danger remove-subunit" {% if subunits|length == 1 %}hidden{% endif %}>
+            Remove
+          </button>
+        </div>
+        <div class="two-col">
+          <label class="field">
+            <span>Group list</span>
+            <textarea name="group_list" required rows="4" placeholder="One group per line">{{ row.group_list }}</textarea>
+          </label>
+          <label class="field">
+            <span>Place name</span>
+            <input name="place_name" required value="{{ row.place_name }}" placeholder="Location / venue" />
+          </label>
+        </div>
+      </section>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn primary">Submit start state</button>
+  </div>
+</form>
+
+<template id="subunit-template">
+  <section class="subunit-card" data-subunit>
+    <div class="subunit-card-top">
+      <label class="field grow">
+        <span>Subunit name</span>
+        <input name="subunit_name" required placeholder="Subunit name" />
+      </label>
+      <button type="button" class="btn danger remove-subunit">Remove</button>
+    </div>
+    <div class="two-col">
+      <label class="field">
+        <span>Group list</span>
+        <textarea name="group_list" required rows="4" placeholder="One group per line"></textarea>
+      </label>
+      <label class="field">
+        <span>Place name</span>
+        <input name="place_name" required placeholder="Location / venue" />
+      </label>
+    </div>
+  </section>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const list = document.getElementById("subunit-list");
+    const template = document.getElementById("subunit-template");
+    const addBtn = document.getElementById("add-subunit");
+
+    function refreshRemoveButtons() {
+      const cards = list.querySelectorAll("[data-subunit]");
+      cards.forEach((card) => {
+        const btn = card.querySelector(".remove-subunit");
+        if (btn) btn.hidden = cards.length === 1;
+      });
+    }
+
+    addBtn.addEventListener("click", () => {
+      const node = template.content.cloneNode(true);
+      list.appendChild(node);
+      refreshRemoveButtons();
+    });
+
+    list.addEventListener("click", (event) => {
+      const btn = event.target.closest(".remove-subunit");
+      if (!btn) return;
+      const card = btn.closest("[data-subunit]");
+      if (!card) return;
+      if (list.querySelectorAll("[data-subunit]").length <= 1) return;
+      card.remove();
+      refreshRemoveButtons();
+    });
+
+    refreshRemoveButtons();
+  })();
+</script>
+{% endblock %}

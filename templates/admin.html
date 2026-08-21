@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Admin — Start State{% endblock %}
+
+{% block content %}
+<section class="hero compact admin-hero">
+  <div>
+    <p class="eyebrow">Admin</p>
+    <h1>Submissions</h1>
+    <p class="lede">All forms saved in schema <code>start_state</code>, table <code>submissions</code>.</p>
+  </div>
+  <form method="post" action="{{ url_for('admin_logout') }}">
+    <button type="submit" class="btn ghost">Sign out</button>
+  </form>
+</section>
+
+{% if not submissions %}
+  <p class="empty">No submissions yet.</p>
+{% else %}
+  <div class="submission-list">
+    {% for item in submissions %}
+    <article class="submission-card">
+      <header class="submission-card-head">
+        <div>
+          <p class="eyebrow">#{{ item.id }}</p>
+          <h2>{{ item.unit_name }}</h2>
+        </div>
+        <time>{{ item.created_at }}</time>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Subunit</th>
+              <th>Group list</th>
+              <th>Place name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sub in item.subunits %}
+            <tr>
+              <td>{{ sub.subunit_name }}</td>
+              <td class="pre">{{ sub.group_list }}</td>
+              <td>{{ sub.place_name }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Admin login — Start State{% endblock %}
+
+{% block content %}
+<section class="hero compact">
+  <h1>Admin</h1>
+  <p class="lede">Sign in to view submitted start state forms.</p>
+</section>
+
+<form method="post" class="form-shell narrow">
+  <label class="field">
+    <span>Password</span>
+    <input type="password" name="password" required autocomplete="current-password" />
+  </label>
+  <button type="submit" class="btn primary">Sign in</button>
+</form>
+{% endblock %}
